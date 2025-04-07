@@ -1,7 +1,6 @@
 import random
-import numpy
-hpoints = 50
 status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL")
+concount = ["Nothing here",0,0,0,0]
 
 def colourtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wjot 5.blu
     if z == 1: #red
@@ -94,8 +93,12 @@ class Enemy:
                 l =  l+1
                 return l
         
-
-    def humstat(self,x):
+    def humstat(self,x): # i reckon a counter would be necessary at this point! list? raw counter? how do i make it recognise a current status? at the start?
+        self.sag = False #biiiig reset 
+        self.mel = False
+        self.cho = False
+        self.phl = False
+        self.unw = False
         if x !=0:
             text = self.name + " is " + status[x] + "!"
             colourhtxt(text,x)
@@ -106,11 +109,11 @@ class Enemy:
             elif x == 3:
                 self.mel = True
             elif x == 4:
-                self.mel = True
+                self.phl = True
             elif x == 5:
                 self.unw = True
         else:
-            pass
+            pass ##something something.... tjhis would reset the counter fully. 
     
     def showhum(self):
         humours = [self.red,self.yel,self.blk,self.wht]
@@ -169,12 +172,30 @@ class Enemy:
         j = "".join(health)
         print(f"{self.name}'s Health: " + str(self.hp))
         print(j)
-            
+
 
 class Attack:
-    def __init__(self,name,dam):
+    def __init__(self,name,htype, amt, dam,acc):
         self.name = name
-        self.dam = dam 
+        self.htype = htype #will be 0=none 1 =red 2=yel 3=blk 4=wht
+        self.amt = amt #degree of damage -ve or +ve
+        self.dam = dam #damage 
+        self.acc = acc #accuracy, rated 0-100 like pokemon
+    def attack(self,e): #### I RECKON add status effects at this space. 
+        colourtxt("      %s used %s ! * " % (e.name,self.name), self.htype)
+        a = random.randint(0,100)
+        if a < self.acc:
+            you.hp = you.hp - self.dam
+            if self.htype == 1:
+                you.red = you.red + self.amt
+            elif self.htype == 2:
+                you.yel = you.yel + self.amt
+            elif self.htype == 3:
+                you.blk = you.blk + self.amt
+            elif self.htype == 4:
+                you.wht = you.wht + self.amt
+        else:
+            print("       ...It missed!")        
 
 
 class Spell:
@@ -196,6 +217,17 @@ class Spell:
         elif self.htype == 4:
             e.wht = e.wht + self.amt
 
+def checkhealth(x):
+    global fighting
+    if x.hp <= 0:
+        print("%s had been defeated." % (x.name))
+        fighting = False
+    elif you.hp <= 0:
+        print("You have been defeated.")
+        fighting = False
+    else:
+        fighting = True
+
 #h type 1= red 2= yel 3= blk 4=wht
 bld1 = Spell("BLOODLET Σ",1,-2,4)
 bld2 = Spell("STIMULATE MARROW σ",1,3,-4)
@@ -207,38 +239,30 @@ wht1 = Spell("EJECT PHLEGM Θ",4,-4,2)
 wht2 = Spell("INCREASE PHLEGM θ",4,6,0)
 clob = Spell("CLOBBER",1,-1,8)
 
-def showpoints():
-    global hpoints
-    healthpoints = []
-    brix = int(hpoints/5) + (hpoints % 5 > 0)
-    jumbo = round(brix)
-    for j in range(jumbo):
-        q = "—"
-        healthpoints.append(q)
-    p = "".join(healthpoints)
-    print("Your Health: " + str(hpoints))
-    print(p)
+slp1 = Attack("SLAP", 0,0,5,100)
+slp2 = Attack("BACKHAND",0,0,2,20)
+pch1 = Attack("LIVER PUNCH",2,-2,4,100)
+stb1 = Attack("KNIFE",1,-3,7,100)
+pri1 = Attack("STRIKE OF FAITH",3,8,3,85)
+pri2 = Attack("DIVINE LIGHT",4,4,0,100)
+pri3 = Attack("STIMULATE MARROW α",1,6,-8,100)
 
 
-def turn():
-    showpoints()
-    ene.showhp()
-    #ene.showhum()
-    r = ene.humours()
-    ene.humstat(r)
-    ene.hresponse(r)
-    global turnnumber
-    turnnumber = turnnumber + 1
 
-def isalive(x):
-    if hpoints <= 0:
-        print("You have died...")
-        return False
-    elif x.hp <= 0:
-        print(x.name + " has been defeated!")
-        return False
-    else:
-        return True
+
+def turn(x):
+        x.showhp()
+        r = x.humours()
+        x.humstat(r)
+        x.hresponse(r)
+        you.showhp()
+        p = you.humours()
+        you.humstat(p)
+        you.hresponse(p)
+        global turnnumber
+        turnnumber = turnnumber +1
+
+
     
 
 
@@ -254,29 +278,22 @@ ene = Enemy("TEST ENEMY",20,5,5,5,5,False,False,False,False,False,("00","\"Ha...
             ("00","\"Hahahaha... I can't stop laughing!\"","\"Right! You're getting a fucking pasting!\"","\"I think I'm having a depressive episode, you know.\"","\"I'm really confused! Who am I? What am I doing here?\"","\"I feel rotten. I need a big glass of water and a paracetamol.\"")
             )
 
-fighting = True
-turnnumber = 1
+you = Enemy("The Theurgist",20,5,5,5,5,False,False,False,False,False,("00","\"My blood...\"", "Rage swells in your chest and makes your throat burn.", "\"...\"", "You forgot where you are.", "\"...\""),
+            ("00","This all seems very funny.", "\"Ugh...\"", "\"...\"", "\"...\"", "You grow pale, feeling the imbalance of humours inside of you."),
+            ("00","You stifle a laugh.", "\"...\"", "The darkness grows near...", "You forgot your name.", "Your stomach churns unpleasantly..."),
+            ("00","\"...\"", "You let out a tut.", "A deep sadness cuts through your heart.", "\"What...?\"", "\"...\""),
+            ("00","\"...\"", "\"...\"", "You find yourself shedding tears.", "\"...\"", "\"Urk...\""))
 
-while fighting == True:
-    turn()
-    blk2.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    wht1.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    blk1.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    bld2.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    ylb2.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    bld1.cast(ene)
-    fighting = isalive(ene)
-    turn()
-    clob.cast(ene)
-    fighting = isalive(ene)
+
+turnnumber = 1
+fighting = True
+
+while fighting == True: #### checks come after health. duh
+    pri3.attack(ene)
+    checkhealth(ene) 
+    turn(ene) 
+    clob.cast(ene) 
+    checkhealth(ene)
+    
+
     
