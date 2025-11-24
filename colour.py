@@ -1,9 +1,11 @@
 import random
+prompt_reply = "Input: "
+text_invalid = "Text invalid. Please try again."
 status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # these are statuses
 checkerlim = 2 # this is the upper limit to how high a humour can be 
 tab = "     " 
 
-def colourtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wjot 5.blu
+def colourtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wht 5.blu
     """
     Prints coloured text.
 
@@ -57,6 +59,30 @@ def colourhtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wjot 5. blu
         print(y)
     else:
         print(x)    
+
+def inputreply(x): #x must be +ve integer (number of poss options)
+    """
+    provides place for input
+    returns integer typed
+    """ 
+    doneflag = False
+    while doneflag == False:
+        rawinput = input(prompt_reply)
+        inputted = rawinput.strip()
+        if inputted.isdigit():
+            try:
+                inty = int(inputted)
+            except TypeError:
+                print(text_invalid)
+            except:
+                print(text_invalid)
+            if inty > 0 and inty != 0 and inty <= x:
+                doneflag = True
+                return inty
+            else:
+                print(text_invalid)
+        else:
+            print(text_invalid)
 
 def compare(x_list,y_list): ##this is to compare this/last turns humours. 
     """
@@ -182,7 +208,8 @@ class Enemy:
         if adding == True: 
             #print("found. adding 1 to " + self.name) 
             self.checker =  self.checker + 1 #this is the death counter, adding one
-            #print("checker: " + str(self.checker))
+            print("checker: " + str(self.checker))
+            prevhums = hums
         else:
             #print("nothing amiss with %s ..." % (self.name))
             self.checker = 0 #no consecutive status effect, so no number added
@@ -370,6 +397,8 @@ wht1 = Spell("EJECT PHLEGM Θ",4,-4,2)
 wht2 = Spell("INCREASE PHLEGM θ",4,6,0)
 clob = Spell("CLOBBER",1,-1,8)
 
+spellbook = [bld1,bld2,ylb1,ylb2,blk1,blk2,wht1,wht2]
+
 """ for attacks
         self.name = name
         self.htype = htype # int. will be 0=none 1 =red 2=yel 3=blk 4=wht
@@ -379,15 +408,51 @@ clob = Spell("CLOBBER",1,-1,8)
 """
 
 slp1 = Attack("SLAP", 0,0,1,100)
-slp2 = Attack("BACKHAND",0,0,2,20)
+slp2 = Attack("BACKHAND",0,0,2,80)
 pch1 = Attack("LIVER PUNCH",2,-2,4,100)
+dpr1 = Attack("WHINGE",3,2,0,100)
 stb1 = Attack("KNIFE",1,-3,7,10)
 pri1 = Attack("STRIKE OF FAITH",3,8,3,85)
 pri2 = Attack("DIVINE LIGHT",4,4,0,100)
 pri3 = Attack("STIMULATE MARROW α",1,6,-8,100)
 
+ene_moveset = (slp1,slp2,pch1,stb1)
 
 
+def randommove(x,e): 
+    """
+    x is a list of attacks. e is the enemy it belongs to. returns move y in that list, but doesn't use the same move in a row.
+    returns y - item in Attack list
+    """
+    choosing = False
+    z = 7 #to begin with
+    y = random.choice(x)
+    choosing = True
+    while choosing == True:
+        if x.index(y) != z:
+            z = x.index(y) #registering previous index
+            y.attack(e)
+            choosing = False
+        else:
+            y = random.choice(x)
+
+def pickspell(e): #e = enemy
+    """
+    list of spells made from total. player picks one and casts by inputting
+    """
+    spellchoice = []
+    z = 1
+    spellchoice = random.sample(spellbook, k=5)
+    print(" *Choose a spell to cast:")
+    for i in spellchoice:
+        j=i.name
+        print(str(z) + ". " + j )
+        z=z+1
+    ans = inputreply(5)
+    indy = ans - 1
+    p = spellchoice[indy]
+    spellchoice.clear
+    p.cast(e)
 
 def turn(x):
         x.showhp() # shows hp
@@ -457,27 +522,7 @@ fighting = True
 
 while fighting == True:
     turn(ene)
-    slp1.attack(ene)
-    fighting = checkhealth(ene)
-    bld1.cast(ene) 
-    fighting = checkhealth(ene)
-    turn(ene)
-    slp1.attack(ene)
-    fighting = checkhealth(ene)
-    wht1.cast(ene) 
-    fighting = checkhealth(ene)
-    turn(ene)
-    slp1.attack(ene)
-    fighting = checkhealth(ene)
-    blk2.cast(ene)
+    randommove(ene_moveset,ene)
     fighting = checkhealth(ene) 
-    turn(ene)
-    slp1.attack(ene)
+    pickspell(ene)
     fighting = checkhealth(ene)
-    bld1.cast(ene)
-    fighting = checkhealth(ene)
-    turn(ene)
-    slp1.attack(ene)
-    fighting = checkhealth(ene)
-    ylb1.cast(ene)
-    fighting = checkhealth(ene) 
