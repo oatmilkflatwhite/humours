@@ -4,6 +4,16 @@ text_invalid = "Text invalid. Please try again."
 status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # these are statuses
 checkerlim = 2 # this is the upper limit to how high a humour can be 
 tab = "     " 
+anyk = "PRESS ANY KEY TO CONTINUE >>"
+test_tuple = ("This is some text.",
+              "This is some more text.",
+              "Yippee!")
+
+test_tuple2 = ("Long long ago...","Something happened.","And then something else happened.")
+
+test_tuple3 = ("And then more things happened.","I guess...")
+
+test_tuple4 = ("And then more.")
 
 def colourtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wht 5.blu
     """
@@ -58,7 +68,30 @@ def colourhtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wjot 5. blu
         y = "\033[44m\033[1m"+ x + "\033[0m"
         print(y)
     else:
-        print(x)    
+        print(x)   
+
+def storytext(t): # t = tuple
+    """
+    t is a tuple, and it prints text. 
+    """
+    y = 0
+    z = len(t)
+    while y < z:
+        print(t[y])
+        y = y+1
+        input(anyk)
+
+
+progress = 0
+def storyprog(): #prints text, and sets enemy . enemy = storyprog
+    global progress
+    current = progress
+    progress =+1
+    storytext(story_narration[current])
+    return current 
+    
+    
+
 
 def inputreply(x): #x must be +ve integer (number of poss options)
     """
@@ -96,16 +129,15 @@ def compare(x_list,y_list): ##this is to compare this/last turns humours.
     #print("** hums" +  str(x_list))
     #print("prevhums" + str(y_list))
     
-    x = any(i != j for i, j in zip(x_list, y_list)) #checks between each item in both lists, if they are the same, it returns 'true'.
-    if x == True:
-        if True in x_list: #... further, if that 'true' exists in x_list, 
-            return True #this means that it will be ;true', as we are looking for continuation of 
+    x = zip(x_list, y_list) #checks between each item in both lists, if they are the same, it returns 'true'.
+    if (True,True) in x:
+        return True
     else:
         return False
 
 
 class Enemy:
-    def __init__(self,name,hp,red,yel,blk,wht,sag,cho,mel,phl,unw,phr1,phr2,phr3,phr4,phr5,dflag,checker):
+    def __init__(self,name,hp,red,yel,blk,wht,sag,cho,mel,phl,unw,phr1,phr2,phr3,phr4,phr5,dflag,dphrase,checker,moveset):
         self.name = name
         self.hp = hp
         self.red = red #blood points
@@ -123,7 +155,9 @@ class Enemy:
         self.phr4 = phr4 # "
         self.phr5 = phr5 # " 
         self.dflag = dflag #deathflag
+        self.dphrase = dphrase #deathphrase. tuple. 
         self.checker = checker
+        self.moveset = moveset
 
     def humours(self): #functions to check one's humours
         """
@@ -306,7 +340,7 @@ class Attack:
             mult =  0.5
         if e.cho == True: #angy, mult up, acc down
             mult = 2
-            accu = 0.25
+            accu = 0.75
         colourtxt("      %s used %s ! * " % (e.name,self.name), self.htype)
         a = random.randint(0,100)
         hitrate =  accu*self.acc #accu = accuracy from status effect. acc is from attack only. 
@@ -356,7 +390,7 @@ class Spell:
         elif self.htype == 4:
             e.wht = e.wht + self.amt
 
-def checkhealth(x):
+def checkhealth(x): #where x = enemy
     """
     checks for death flags. 
     find and prints death reason.
@@ -365,16 +399,33 @@ def checkhealth(x):
     """
     global checkerlim
     if x.hp <= 0:
-        print("%s was defeated in battle!" % (x.name))
+        print("%s has been killed." % (x.name))
+        x.dflag = True
         return False
     elif x.checker >= checkerlim:
-        print("%s was defeated through the manupulation of humours!" % (x.name))
+        print("%s was weakened through the manupulation of humours." % (x.name))
+        options = ['YES',"NO"]
+        z=1
+        print("Kill " + x.name + "?")
+        for i in options:
+            print(str(z) + ". " + i )
+            z=z+1
+        ans = inputreply(2)
+        if ans == 1:
+            print(x.dphrase[0])
+            print("You extinguised %s'S life." % x.name)
+            x.dflag = True
+        else:
+            print("%s was spared." % x.name)
+            print(x.dphrase[1])
         return False
     elif you.hp <= 0:
         print("You were defeated in battle...")
+        you.dflag = True
         return False
     elif you.checker >= checkerlim:
         print("The Theurgist has met their worse end: the imbalance of their own humours.")
+        you.dflag = True
         return False
     else:
         return True
@@ -387,8 +438,8 @@ def checkhealth(x):
         self.dam = dam #hp gotten rid of 
 """
 
-bld1 = Spell("BLOODLET Σ",1,-2,4)
-bld2 = Spell("STIMULATE MARROW σ",1,-1,-4 )
+bld1 = Spell("BLOODLET Σ",1,-4,4)
+bld2 = Spell("STIMULATE MARROW σ",1,1,-4 )
 ylb1 = Spell("EXPEL YELLOW BILE Ξ",2,-3,3)
 ylb2 = Spell("INVIGORATE LIVER ξ",2,3,-1)
 blk1 = Spell("PURGE BLACK BILE Δ",3,-4,3)
@@ -412,29 +463,39 @@ slp2 = Attack("BACKHAND",0,0,2,80)
 pch1 = Attack("LIVER PUNCH",2,-2,4,100)
 dpr1 = Attack("WHINGE",3,2,0,100)
 stb1 = Attack("KNIFE",1,-3,7,10)
+kni1 = Attack("POMMEL STRIKE",0,0,3,80)
+kni2 = Attack("THRUST",1,-1,2,95)
+kni3 = Attack("UPPERCUT",1,-2,5,50)
+kni4 = Attack("SPIRITED YELL",2,2,0,100)
+dog1 = Attack("NIP",1,-1,2,85)
+dog2 = Attack("SNARL",2,1,0,100)
+dog3 = Attack("WHIMPER",3,1,0,100)
+dog4 = Attack("VICIOUS BITE",1,-3,5,50)
 pri1 = Attack("STRIKE OF FAITH",3,8,3,85)
 pri2 = Attack("DIVINE LIGHT",4,4,0,100)
 pri3 = Attack("STIMULATE MARROW α",1,6,-8,100)
+pri4 = Attack("PURGE BLACK BILE Δ",3,-4,3,100)
+pri5 = Attack("ADMONISH",2,2,0,100)
 
-ene_moveset = (slp1,slp2,pch1,stb1)
 
 
-def randommove(x,e): 
+
+def randommove(e): 
     """
-    x is a list of attacks. e is the enemy it belongs to. returns move y in that list, but doesn't use the same move in a row.
+    e is the enemy it belongs to. returns move y in that list, but doesn't use the same move in a row.
     returns y - item in Attack list
     """
     choosing = False
     z = 7 #to begin with
-    y = random.choice(x)
+    y = random.choice(e.moveset)
     choosing = True
     while choosing == True:
-        if x.index(y) != z:
-            z = x.index(y) #registering previous index
+        if e.moveset.index(y) != z:
+            z = e.moveset.index(y) #registering previous index
             y.attack(e)
             choosing = False
         else:
-            y = random.choice(x)
+            y = random.choice(e.moveset)
 
 def pickspell(e): #e = enemy
     """
@@ -467,7 +528,9 @@ def turn(x):
         turnnumber = turnnumber +1
 
 
-    
+
+
+
 
 
         
@@ -492,37 +555,59 @@ def turn(x):
         self.phr4 = phr4 # "
         self.phr5 = phr5 # " 
         self.dflag = dflag #deathflag
+        self.dphrase =dphrase #deathphrase words tuple/ 0= kiled 1=spared
         self.checker = checker
 """
 ene = Enemy("TEST ENEMY",20,5,5,5,5,False,False,False,False,False,("00","\"Ha... Ha ha ha!\"", "\"I'm fucking fuming!!\"", "\"What's the point in anything...?\"", "\"...Huh? What's going on?\"", "\"Christ, I feel really off.\""),
             ("00","She laughs hysterically...","She's bright red with anger!","She looks very sad.","She seems very confused.","She looks very under the weather."),
             ("00","\"Ahahaha! This is so fun!\"","\"I've had it up to here with you mate!\"","\"I'm having some really scary thoughts...\"","\"Where am I?\"","\"I think I need a lie down.\""),
             ("00","She clutches her stomach in laughter.","She's fuming!","She has a forlorn look to her.","She seem very lost in thought.","\"My humours must be all off-kilter.\""),
-            ("00","\"Hahahaha... I can't stop laughing!\"","\"Right! You're getting a fucking pasting!\"","\"I think I'm having a depressive episode, you know.\"","\"I'm really confused! Who am I? What am I doing here?\"","\"I feel rotten. I need a big glass of water and a paracetamol.\""), False,0
+            ("00","\"Hahahaha... I can't stop laughing!\"","\"Right! You're getting a fucking pasting!\"","\"I think I'm having a depressive episode, you know.\"","\"I'm really confused! Who am I? What am I doing here?\"","\"I feel rotten. I need a big glass of water and a paracetamol.\""),
+            False,("\"I guess it's all over\"","\"Really? Thanks!\""),0,(slp1,slp2,pch1,stb1),
             )
 
-you = Enemy("The Theurgist",20,5,5,5,5,False,False,False,False,False,("00","\"My blood...!\"", "Rage swells in your chest; it burns your throat.", "\"The black bile weighs down your very soul.\"", "You forgot where you are.", "A headache roils behind your eyeballs"),
+you = Enemy("The THEURGIST",50,5,5,5,5,False,False,False,False,False,("00","\"My blood...!\"", "Rage swells in your chest; it burns your throat.", "\"The black bile weighs down your very soul.\"", "You forgot where you are.", "A headache roils behind your eyeballs"),
             ("00","This all seems very funny.", "\"Ugh...!\"", "It feels difficult to be alive.", "You look around in wonder of all your surroundings.", "You grow pale, feeling the imbalance of humours inside of you."),
             ("00","You stifle a laugh.", "It feels usual for you to be this angry", "The darkness grows near...", "You forgot your name.", "Your stomach churns unpleasantly..."),
             ("00","\"Ha... haha!\"", "You let out a sharp tut.", "A deep sadness cuts through your heart.", "\"What...? What is going on?\"", "\"...\""),
             ("00","You do not remember the last time you had this much fun.", "\"I have slain every enemy of mine! You are next!\"", "Warm tears roll down your cheeks...", "\"...Where is this?\"", "\"Urk...\""),
-            False,0)
+            False,("Death...?","I..."),0,(""))
+
+bra = Enemy("BRAVE KNIGHT",20,5,5,5,5,False,False,False,False,False,("00","\"Ha!\"", "\"You've drawn your last breath!\"", "\"...\"", "\"...What in the devil is going on?\"", "*COUGH* *COUGH*"),
+            ("00","He laughs hysterically...","He's bright red with anger!","He looks as though he's about to cry.","He seems very confused.","He looks very under the weather."),
+            ("00","\"Ahahaha! This is some good fun!\"","\"I have had it up to here with you!\"","\"What is the point in all of this? Just kill me.\"","\"Remind me, madam, where am I?\"","\"Urk...\""),
+            ("00","He clutches her stomach in laughter.","He's fuming!","He has a forlorn look to him.","He seems very lost in thought.","The BRAVE KNIGHT seems poorly."),
+            ("00","\"Hahahaha... HAHAHA!\"","\"Prepare to die!\"","\"Finish me. I have no desire to be alive.\"","The BRAVE KNIGHT observes the sword in his hand like a foreign object","\"I feel rotten. I need a big glass of water and a paracetamol.\""),
+            False,("\"Don't kill me, please!\"","The BRAVE KNIGHT gave a bow before limping away..."),0,(kni1,kni2,kni3,kni4)
+            )
+
+dog = Enemy("DOG",10,5,5,5,5,False,False,False,False,False,("00","The DOG wags its tail.", "\"Grrr... ARF!\"", "The DOG is despondent.", "The DOG sniffs the ground", "*whimper*"),
+            ("00","\"Arf!\"","The DOG lets out a growl...","","The DOG doesn't react to its surroundings.","The DOG seems very interested in its tail.","The DOG curls up on the ground."),
+            ("00","The DOG pants, its tongue lolling our from its mouth.","The DOG will not stop barking.","The DOG doesn't blink.","It regards you as a stranger.","The DOG whimpers..."),
+            ("00","The DOG looks like it wants to play.","The DOG bares its teeth...","It does not respond to your attacks.","It paws at the ground.","The DOG seems upset..."),
+            ("00","*pant* *pant*","\"ARF! ARF! ARF!\"","It does not move.","*sniff* *sniff*","It takes a submissive position, with its tail in between its legs."),
+            False,("You see fear, rage - a desire to live in this creature's eyes.","The DOG ran away..."),0,(dog1,dog2,dog3,dog4)
+            )
+
+pri = Enemy("PRINCESS",50,5,5,5,5,False,False,False,False,False,("00","The PRINCESS lets out a hearty laugh.", "\"It ends here, Magister! Die!\"", "A tear rolls down PRINCESS's cheek.", "\"Salve, Magister. What are we learning today?\"", "The PRINCESS puts a hand to her mouth."),
+            ("00","\"Ahahaha!\"","The PRINCESS spits onto the ground","","\"Oh, Magister... Oh, Magister...\"","\"Ave, Magister. What are you doing here?\"","The PRINCESS looks like she's about to be sick."),
+            ("00","\"Magister! Look what I can do!\"","\"Attone with your blood!\"","\"Where did it all go wrong, Magister?\"","The PRINCESS expresses deep concern. \"Magister... Did I have homework? I'm sorry, Magister. I forgot.\"","The PRINCESS grimaces. \"My humours...!\""),
+            ("00","The PRINCESS chuckles \"I do not remember the last time I laughed this much!\"","\"I should have done this years ago!\"","The PRINCESS bursts into tears, weeping.","\"Hmm... Magister, remind me what we're doing?\"","\"...\""),
+            ("00","The PRINCESS is delighted.","\"The walls will be stained with your blood!\"","\"I missed you, Magister...\"","The PRINCESS observes her nails","The PRINCESS struggles to stay standing."),
+            False,("\"My ghost will haunt you until your very last breath. Remember that, THEURGIST.\"","\"...Coward!\""),0,(pri1,pri2,pri3,pri4,pri5)
+            )
 
 
-turnnumber = 1
-fighting = True
-
-##FIGHTS GO 
-#while fighting == True: #### checks come after health. duh
-    #turn(ene)
-    #xxx.attack(ene)
-    #fighting = checkhealth(ene) 
-    #bld2.cast(ene)
-    #fighting = checkhealth(ene)
-
-while fighting == True:
-    turn(ene)
-    randommove(ene_moveset,ene)
-    fighting = checkhealth(ene) 
-    pickspell(ene)
-    fighting = checkhealth(ene)
+story_narration = (test_tuple,test_tuple2,test_tuple3,test_tuple4)
+story_enemies = (dog,ene,bra,pri)
+c=0
+while c < 5:
+    c = storyprog()
+    enemy = story_enemies[c]
+    turnnumber = 1
+    fighting = True
+    while fighting == True:
+        turn(enemy)
+        randommove(enemy)
+        pickspell(enemy)
+        fighting = checkhealth(enemy)
