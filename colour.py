@@ -2,7 +2,7 @@ import random
 prompt_reply = "Input: "
 text_invalid = "Text invalid. Please try again."
 status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # these are statuses
-checkerlim = 2 # this is the upper limit to how high a humour can be 
+checkerlim = 3 # this is the upper limit to how high a humour can be 
 tab = "     " 
 anyk = "PRESS ANY KEY TO CONTINUE >>"
 test_tuple = ("This is some text.",
@@ -13,7 +13,19 @@ test_tuple2 = ("Long long ago...","Something happened.","And then something else
 
 test_tuple3 = ("And then more things happened.","I guess...")
 
-test_tuple4 = ("And then more.")
+test_tuple4 = ("And then more.","More and more things happened.")
+
+
+
+mai_tuple =("A young woman wades out from the observing crowd. \"You Bastard! You killed her!\"", "From her sleeve, the young woman pulls out a switchblade, with its edge glinting. \"You killed my dog!\"")
+
+end1_tuple =("Nobody comes to your aid.","Nobody gives you a proper burial.","You become carrion, until you are bones, and until the land claims you.")
+end2_tuple =("The last thing you see is the princess. She takes your life.","She is not the young girl you once knew.")
+end3_tuple =("When your back is turned, she stabs you in the back","\"How dare you!\" she screams, \"How dare you show mercy to me!\"") 
+end4_tuple =("This is the ending where you dint do a murdering of folk","lol I would like it to be a bit hopeful.")
+end5_tuple =("The ending where you kill her","The king gives you lots of money.")
+
+#I NEED TO PUT ENDING AT THE ENDDING.
 
 def colourtxt(x,z): # x = text z= colour 1.re 2.yel 3.blk 4. wht 5.blu
     """
@@ -82,9 +94,7 @@ def storytext(t): # t = tuple
         input(anyk)
 
 
-progress = 0
 def storyprog(): #prints text, and sets enemy . enemy = storyprog
-    global progress
     current = progress
     progress =+1
     storytext(story_narration[current])
@@ -368,8 +378,12 @@ class Spell:
     def cast(self, e): # e= enemy
         mult = 1
         if you.mel == True: #melancholy status effect, depression
-            colourtxt("Harrowed by sadness, you cannot bring yourself to attack.",3)
-            return  #return brings it out, no continue
+            numb = random.randint(1,4)
+            if numb == 1:
+                colourtxt("Harrowed by sadness, you cannot bring yourself to attack.",3)
+                return  #return brings it out, no continue
+            else:
+                mult = 0.75
         if you.phl == True: #phlegmatic status effest, forget
             colourtxt("    * You forgot how to cast spells...",4)
             colourtxt("    * You hit " + e.name + " with your staff instead!", 4)
@@ -413,18 +427,18 @@ def checkhealth(x): #where x = enemy
         ans = inputreply(2)
         if ans == 1:
             print(x.dphrase[0])
-            print("You extinguised %s'S life." % x.name)
+            print("You extinguised the %s'S life." % x.name)
             x.dflag = True
         else:
-            print("%s was spared." % x.name)
+            print("The %s was spared." % x.name)
             print(x.dphrase[1])
         return False
     elif you.hp <= 0:
-        print("You were defeated in battle...")
+        print("You were defeated in battle.")
         you.dflag = True
         return False
     elif you.checker >= checkerlim:
-        print("The Theurgist has met their worse end: the imbalance of their own humours.")
+        print("The imbalance of your own humours led to your demise.")
         you.dflag = True
         return False
     else:
@@ -438,15 +452,14 @@ def checkhealth(x): #where x = enemy
         self.dam = dam #hp gotten rid of 
 """
 
-bld1 = Spell("BLOODLET Σ",1,-4,4)
-bld2 = Spell("STIMULATE MARROW σ",1,1,-4 )
+bld1 = Spell("BLOODLET Σ",1,-4,6)
+bld2 = Spell("STIMULATE MARROW σ",1,2,-4)
 ylb1 = Spell("EXPEL YELLOW BILE Ξ",2,-3,3)
 ylb2 = Spell("INVIGORATE LIVER ξ",2,3,-1)
-blk1 = Spell("PURGE BLACK BILE Δ",3,-4,3)
+blk1 = Spell("PURGE BLACK BILE Δ",3,-4,4)
 blk2 = Spell("ROUSE KIDNEYS δ",3,3,-2)
-wht1 = Spell("EJECT PHLEGM Θ",4,-4,2)
-wht2 = Spell("INCREASE PHLEGM θ",4,6,0)
-clob = Spell("CLOBBER",1,-1,8)
+wht1 = Spell("EJECT PHLEGM Θ",4,-4,1)
+wht2 = Spell("INCREASE PHLEGM θ",4,5,0)
 
 spellbook = [bld1,bld2,ylb1,ylb2,blk1,blk2,wht1,wht2]
 
@@ -458,11 +471,10 @@ spellbook = [bld1,bld2,ylb1,ylb2,blk1,blk2,wht1,wht2]
         self.acc = acc #accuracy, rated 0-1 like pokemon
 """
 
-slp1 = Attack("SLAP", 0,0,1,100)
-slp2 = Attack("BACKHAND",0,0,2,80)
-pch1 = Attack("LIVER PUNCH",2,-2,4,100)
-dpr1 = Attack("WHINGE",3,2,0,100)
-stb1 = Attack("KNIFE",1,-3,7,10)
+slp1 = Attack("STAB", 1,-3,3,70)
+slp2 = Attack("SLAP",4,-1,2,80)
+mai1 = Attack("TRADITIONAL HEX",3,2,2,100)
+
 kni1 = Attack("POMMEL STRIKE",0,0,3,80)
 kni2 = Attack("THRUST",1,-1,2,95)
 kni3 = Attack("UPPERCUT",1,-2,5,50)
@@ -504,7 +516,7 @@ def pickspell(e): #e = enemy
     spellchoice = []
     z = 1
     spellchoice = random.sample(spellbook, k=5)
-    print(" *Choose a spell to cast:")
+    print(" * Choose a spell to cast:")
     for i in spellchoice:
         j=i.name
         print(str(z) + ". " + j )
@@ -527,11 +539,37 @@ def turn(x):
         global turnnumber
         turnnumber = turnnumber +1
 
+def youreset():
+    you.checker = 0
+    you.sag = False
+    you.cho = False
+    you.mel = False
+    you.phl = False
+    you.hp += 5
+    you.red = 5
+    you.yel = 5
+    you.blk = 5
+    you.wht = 5
 
-
-
-
-
+def everyonereset():
+    you.hp = 50
+    mai.hp = 25
+    dog.hp = 10
+    bra.hp = 20
+    pri.hp =50 # must include all, including 'you'
+    squad = [you,mai,dog,pri,bra]
+    for i in squad:
+        i.red = 5
+        i.yel = 5
+        i.blk = 5
+        i.wht = 5
+        i.dflag = False
+        i.sag = False
+        i.cho = False
+        i.mel = False
+        i.phl = False
+        i.checker = 0 
+        
 
         
 ### Status effect counter. rng between 5,8 if the status stays for that long they lose health. probs 1/4 of total. 
@@ -558,22 +596,22 @@ def turn(x):
         self.dphrase =dphrase #deathphrase words tuple/ 0= kiled 1=spared
         self.checker = checker
 """
-ene = Enemy("TEST ENEMY",20,5,5,5,5,False,False,False,False,False,("00","\"Ha... Ha ha ha!\"", "\"I'm fucking fuming!!\"", "\"What's the point in anything...?\"", "\"...Huh? What's going on?\"", "\"Christ, I feel really off.\""),
-            ("00","She laughs hysterically...","She's bright red with anger!","She looks very sad.","She seems very confused.","She looks very under the weather."),
-            ("00","\"Ahahaha! This is so fun!\"","\"I've had it up to here with you mate!\"","\"I'm having some really scary thoughts...\"","\"Where am I?\"","\"I think I need a lie down.\""),
-            ("00","She clutches her stomach in laughter.","She's fuming!","She has a forlorn look to her.","She seem very lost in thought.","\"My humours must be all off-kilter.\""),
-            ("00","\"Hahahaha... I can't stop laughing!\"","\"Right! You're getting a fucking pasting!\"","\"I think I'm having a depressive episode, you know.\"","\"I'm really confused! Who am I? What am I doing here?\"","\"I feel rotten. I need a big glass of water and a paracetamol.\""),
-            False,("\"I guess it's all over\"","\"Really? Thanks!\""),0,(slp1,slp2,pch1,stb1),
+mai = Enemy("The YOUNG MAIDEN",25,5,5,5,5,False,False,False,False,False,("00","\"Ha... Ha ha ha!\"", "\"I'll kill you! I'll kill you dead!\"", "\"Kill me so I can be with my dog.\"", "\"...Huh? What's going on?\"", "\"Urk...\""),
+            ("00","She laughs hysterically...","She's bright red with anger!","\"Oh, Trinket...\"","She seems very confused. \"Who are you?\"","She looks very under the weather."),
+            ("00","\"Ahahaha! This is so fun!\"","\"I've had it up to here with you! Die!\"","She has a forlorn look to her. \"My Trinket... Give me back my Trinket...\"","\"Where am I?\"","\"You nasty woman! What have you done to me?\""),
+            ("00","She clutches her stomach in laughter.","\"Trinket should've torn you apart and eaten you alive!\"","She has a forlorn look to her.","She seem very lost in thought.","\"This is nothing, not compared what you did to Trinket.\""),
+            ("00","\"Hahahaha... I can't stop laughing!\"","\"I'll batter you until you're nothing but a pile of mush!\"","The YOUNG MAIDEN weeps.","\"I'm really confused... Who am I? What am I doing here?\"","The YOUNG MAIDEN sneezes."),
+            False,("\"Trinket... I'll be with you soon.\"","\"...But you didn't spare Trinket, did you?\""),0,(slp1,slp2,mai1),
             )
 
-you = Enemy("The THEURGIST",50,5,5,5,5,False,False,False,False,False,("00","\"My blood...!\"", "Rage swells in your chest; it burns your throat.", "\"The black bile weighs down your very soul.\"", "You forgot where you are.", "A headache roils behind your eyeballs"),
+you = Enemy("The THEURGIST",50,5,5,5,5,False,False,False,False,False,("00","\"My blood...!\"", "Rage swells in your chest; it burns your throat.", "\"The black bile weighs down your very soul.\"", "You forgot where you are.", "A headache roils behind your eyeballs."),
             ("00","This all seems very funny.", "\"Ugh...!\"", "It feels difficult to be alive.", "You look around in wonder of all your surroundings.", "You grow pale, feeling the imbalance of humours inside of you."),
-            ("00","You stifle a laugh.", "It feels usual for you to be this angry", "The darkness grows near...", "You forgot your name.", "Your stomach churns unpleasantly..."),
+            ("00","You stifle a laugh.", "It feels usual for you to be this angry.", "The darkness grows near...", "You forgot your name.", "Your stomach churns unpleasantly..."),
             ("00","\"Ha... haha!\"", "You let out a sharp tut.", "A deep sadness cuts through your heart.", "\"What...? What is going on?\"", "\"...\""),
             ("00","You do not remember the last time you had this much fun.", "\"I have slain every enemy of mine! You are next!\"", "Warm tears roll down your cheeks...", "\"...Where is this?\"", "\"Urk...\""),
             False,("Death...?","I..."),0,(""))
 
-bra = Enemy("BRAVE KNIGHT",20,5,5,5,5,False,False,False,False,False,("00","\"Ha!\"", "\"You've drawn your last breath!\"", "\"...\"", "\"...What in the devil is going on?\"", "*COUGH* *COUGH*"),
+bra = Enemy("The BRAVE KNIGHT",20,5,5,5,5,False,False,False,False,False,("00","\"Ha!\"", "\"You've drawn your last breath!\"", "\"...\"", "\"...What in the devil is going on?\"", "*COUGH* *COUGH*"),
             ("00","He laughs hysterically...","He's bright red with anger!","He looks as though he's about to cry.","He seems very confused.","He looks very under the weather."),
             ("00","\"Ahahaha! This is some good fun!\"","\"I have had it up to here with you!\"","\"What is the point in all of this? Just kill me.\"","\"Remind me, madam, where am I?\"","\"Urk...\""),
             ("00","He clutches her stomach in laughter.","He's fuming!","He has a forlorn look to him.","He seems very lost in thought.","The BRAVE KNIGHT seems poorly."),
@@ -581,33 +619,75 @@ bra = Enemy("BRAVE KNIGHT",20,5,5,5,5,False,False,False,False,False,("00","\"Ha!
             False,("\"Don't kill me, please!\"","The BRAVE KNIGHT gave a bow before limping away..."),0,(kni1,kni2,kni3,kni4)
             )
 
-dog = Enemy("DOG",10,5,5,5,5,False,False,False,False,False,("00","The DOG wags its tail.", "\"Grrr... ARF!\"", "The DOG is despondent.", "The DOG sniffs the ground", "*whimper*"),
-            ("00","\"Arf!\"","The DOG lets out a growl...","","The DOG doesn't react to its surroundings.","The DOG seems very interested in its tail.","The DOG curls up on the ground."),
+dog = Enemy("The DOG",10,5,5,5,5,False,False,False,False,False,("00","The DOG wags its tail.", "\"Grrr... ARF!\"", "The DOG is despondent.", "The DOG sniffs the ground", "*whimper*"),
+            ("00","\"Arf!\"","The DOG lets out a growl...","The DOG doesn't react to its surroundings.","The DOG seems very interested in its tail.","The DOG curls up on the ground."),
             ("00","The DOG pants, its tongue lolling our from its mouth.","The DOG will not stop barking.","The DOG doesn't blink.","It regards you as a stranger.","The DOG whimpers..."),
             ("00","The DOG looks like it wants to play.","The DOG bares its teeth...","It does not respond to your attacks.","It paws at the ground.","The DOG seems upset..."),
             ("00","*pant* *pant*","\"ARF! ARF! ARF!\"","It does not move.","*sniff* *sniff*","It takes a submissive position, with its tail in between its legs."),
             False,("You see fear, rage - a desire to live in this creature's eyes.","The DOG ran away..."),0,(dog1,dog2,dog3,dog4)
             )
 
-pri = Enemy("PRINCESS",50,5,5,5,5,False,False,False,False,False,("00","The PRINCESS lets out a hearty laugh.", "\"It ends here, Magister! Die!\"", "A tear rolls down PRINCESS's cheek.", "\"Salve, Magister. What are we learning today?\"", "The PRINCESS puts a hand to her mouth."),
-            ("00","\"Ahahaha!\"","The PRINCESS spits onto the ground","","\"Oh, Magister... Oh, Magister...\"","\"Ave, Magister. What are you doing here?\"","The PRINCESS looks like she's about to be sick."),
+pri = Enemy("The PRINCESS",50,5,5,5,5,False,False,False,False,False,("00","The PRINCESS lets out a hearty laugh.", "\"It ends here, Magister! Die!\"", "A tear rolls down PRINCESS's cheek.", "\"Salve, Magister. What are we learning today?\"", "The PRINCESS puts a hand to her mouth."),
+            ("00","\"Ahahaha!\"","The PRINCESS spits onto the ground","\"Oh, Magister... Oh, Magister...\"","\"Ave, Magister. What are you doing here?\"","The PRINCESS looks like she's about to be sick."),
             ("00","\"Magister! Look what I can do!\"","\"Attone with your blood!\"","\"Where did it all go wrong, Magister?\"","The PRINCESS expresses deep concern. \"Magister... Did I have homework? I'm sorry, Magister. I forgot.\"","The PRINCESS grimaces. \"My humours...!\""),
             ("00","The PRINCESS chuckles \"I do not remember the last time I laughed this much!\"","\"I should have done this years ago!\"","The PRINCESS bursts into tears, weeping.","\"Hmm... Magister, remind me what we're doing?\"","\"...\""),
             ("00","The PRINCESS is delighted.","\"The walls will be stained with your blood!\"","\"I missed you, Magister...\"","The PRINCESS observes her nails","The PRINCESS struggles to stay standing."),
-            False,("\"My ghost will haunt you until your very last breath. Remember that, THEURGIST.\"","\"...Coward!\""),0,(pri1,pri2,pri3,pri4,pri5)
+            False,("\"My ghost will haunt you until your very last breath. Remember that, THEURGIST.\"","\"...\""),0,(pri1,pri2,pri3,pri4,pri5)
             )
 
 
-story_narration = (test_tuple,test_tuple2,test_tuple3,test_tuple4)
-story_enemies = (dog,ene,bra,pri)
+story_narration = (test_tuple,test_tuple2,test_tuple3)
+story_enemies = (dog,bra,pri)
+story_progression = 0
+story_progression = len(story_narration)
+i=0
 c=0
-while c < 5:
-    c = storyprog()
-    enemy = story_enemies[c]
-    turnnumber = 1
-    fighting = True
-    while fighting == True:
-        turn(enemy)
-        randommove(enemy)
-        pickspell(enemy)
-        fighting = checkhealth(enemy)
+turnnumber = 1
+
+while True:
+    
+    while i < story_progression:
+        if dog.dflag == True:
+            storytext(mai_tuple)
+            enemy = mai
+            dog.dflag = False
+            i=0
+        else: 
+            storytext(story_narration[i])
+            enemy = story_enemies[i]
+        fighting = True
+        while fighting == True:
+            turn(enemy)
+            randommove(enemy)
+            pickspell(enemy)
+            fighting = checkhealth(enemy)
+        if you.dflag == True:
+            i = 100
+        else:
+            youreset()
+            i +=1
+        
+
+    # Ending section
+    deaths = [mai.dflag,bra.dflag] # must include all people
+    murderer = False
+    for d in deaths:
+        if d == True:
+            murderer = True
+
+
+    if you.dflag == True and enemy == pri:
+        storytext(end2_tuple) ## killed by princess
+    elif you.dflag == True:
+        storytext(end1_tuple) #killed by anyone other than princess
+    elif murderer == True:
+        storytext(end3_tuple) # you killed people
+    elif pri.dflag == True:
+        storytext(end5_tuple) # you kill p cess
+    else:
+        storytext(end4_tuple) #you didnt do a murdering hopeful ending
+    input("PRESS ANY KEY TO PLAY AGAIN >>")
+    i=0
+    everyonereset()
+    
+
