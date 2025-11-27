@@ -5,6 +5,9 @@ status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # 
 checkerlim = 3 # this is the upper limit to how high a humour can be 
 tab = "     " 
 anyk = "PRESS ANY KEY TO CONTINUE >>"
+
+intro_tuple = ("Intro text","More intro text")
+
 test_tuple = ("This is some text.",
               "This is some more text.",
               "Yippee!")
@@ -452,8 +455,8 @@ def checkhealth(x): #where x = enemy
         self.dam = dam #hp gotten rid of 
 """
 
-bld1 = Spell("BLOODLET Σ",1,-4,6)
-bld2 = Spell("STIMULATE MARROW σ",1,2,-4)
+bld1 = Spell("BLOODLET Σ",1,-4,8)
+bld2 = Spell("STIMULATE MARROW σ",1,4,-4)
 ylb1 = Spell("EXPEL YELLOW BILE Ξ",2,-3,3)
 ylb2 = Spell("INVIGORATE LIVER ξ",2,3,-1)
 blk1 = Spell("PURGE BLACK BILE Δ",3,-4,4)
@@ -476,20 +479,18 @@ slp2 = Attack("SLAP",4,-1,2,80)
 mai1 = Attack("TRADITIONAL HEX",3,2,2,100)
 
 kni1 = Attack("POMMEL STRIKE",0,0,3,80)
-kni2 = Attack("THRUST",1,-1,2,95)
-kni3 = Attack("UPPERCUT",1,-2,5,50)
+kni2 = Attack("THRUST",1,-1,5,95)
+kni3 = Attack("UPPERCUT",1,-2,7,50)
 kni4 = Attack("SPIRITED YELL",2,2,0,100)
 dog1 = Attack("NIP",1,-1,2,85)
 dog2 = Attack("SNARL",2,1,0,100)
 dog3 = Attack("WHIMPER",3,1,0,100)
 dog4 = Attack("VICIOUS BITE",1,-3,5,50)
-pri1 = Attack("STRIKE OF FAITH",3,8,3,85)
+pri1 = Attack("STRIKE OF FAITH",3,-4,3,85)
 pri2 = Attack("DIVINE LIGHT",4,4,0,100)
 pri3 = Attack("STIMULATE MARROW α",1,6,-8,100)
 pri4 = Attack("PURGE BLACK BILE Δ",3,-4,3,100)
 pri5 = Attack("ADMONISH",2,2,0,100)
-
-
 
 
 def randommove(e): 
@@ -616,22 +617,22 @@ bra = Enemy("The BRAVE KNIGHT",20,5,5,5,5,False,False,False,False,False,("00","\
             ("00","\"Ahahaha! This is some good fun!\"","\"I have had it up to here with you!\"","\"What is the point in all of this? Just kill me.\"","\"Remind me, madam, where am I?\"","\"Urk...\""),
             ("00","He clutches her stomach in laughter.","He's fuming!","He has a forlorn look to him.","He seems very lost in thought.","The BRAVE KNIGHT seems poorly."),
             ("00","\"Hahahaha... HAHAHA!\"","\"Prepare to die!\"","\"Finish me. I have no desire to be alive.\"","The BRAVE KNIGHT observes the sword in his hand like a foreign object","\"I feel rotten. I need a big glass of water and a paracetamol.\""),
-            False,("\"Don't kill me, please!\"","The BRAVE KNIGHT gave a bow before limping away..."),0,(kni1,kni2,kni3,kni4)
+            False,("\"Don't kill me, please!\"","The BRAVE KNIGHT gave a shallow bow before limping away..."),0,(kni1,kni2,kni3,kni4)
             )
 
 dog = Enemy("The DOG",10,5,5,5,5,False,False,False,False,False,("00","The DOG wags its tail.", "\"Grrr... ARF!\"", "The DOG is despondent.", "The DOG sniffs the ground", "*whimper*"),
             ("00","\"Arf!\"","The DOG lets out a growl...","The DOG doesn't react to its surroundings.","The DOG seems very interested in its tail.","The DOG curls up on the ground."),
             ("00","The DOG pants, its tongue lolling our from its mouth.","The DOG will not stop barking.","The DOG doesn't blink.","It regards you as a stranger.","The DOG whimpers..."),
-            ("00","The DOG looks like it wants to play.","The DOG bares its teeth...","It does not respond to your attacks.","It paws at the ground.","The DOG seems upset..."),
+            ("00","The DOG looks like it wants to play.","The DOG bares its teeth...","It does not respond to you.","It paws at the ground.","The DOG seems upset..."),
             ("00","*pant* *pant*","\"ARF! ARF! ARF!\"","It does not move.","*sniff* *sniff*","It takes a submissive position, with its tail in between its legs."),
             False,("You see fear, rage - a desire to live in this creature's eyes.","The DOG ran away..."),0,(dog1,dog2,dog3,dog4)
             )
 
 pri = Enemy("The PRINCESS",50,5,5,5,5,False,False,False,False,False,("00","The PRINCESS lets out a hearty laugh.", "\"It ends here, Magister! Die!\"", "A tear rolls down PRINCESS's cheek.", "\"Salve, Magister. What are we learning today?\"", "The PRINCESS puts a hand to her mouth."),
             ("00","\"Ahahaha!\"","The PRINCESS spits onto the ground","\"Oh, Magister... Oh, Magister...\"","\"Ave, Magister. What are you doing here?\"","The PRINCESS looks like she's about to be sick."),
-            ("00","\"Magister! Look what I can do!\"","\"Attone with your blood!\"","\"Where did it all go wrong, Magister?\"","The PRINCESS expresses deep concern. \"Magister... Did I have homework? I'm sorry, Magister. I forgot.\"","The PRINCESS grimaces. \"My humours...!\""),
-            ("00","The PRINCESS chuckles \"I do not remember the last time I laughed this much!\"","\"I should have done this years ago!\"","The PRINCESS bursts into tears, weeping.","\"Hmm... Magister, remind me what we're doing?\"","\"...\""),
-            ("00","The PRINCESS is delighted.","\"The walls will be stained with your blood!\"","\"I missed you, Magister...\"","The PRINCESS observes her nails","The PRINCESS struggles to stay standing."),
+            ("00","\"Magister, look! Look what I can do!\"","\"Attone with your blood!\"","\"Where did it all go wrong, Magister?\"","The PRINCESS expresses deep concern. \"Magister... Did I have homework? I'm sorry, Magister. I forgot.\"","The PRINCESS grimaces. \"My humours...!\""),
+            ("00","The PRINCESS chuckles \"I do not remember the last time I laughed this much!\"","\"I should have killed you years ago!\"","The PRINCESS bursts into tears, weeping.","\"Hmm... Magister, remind me what we're doing?\"","\"This is nothing.\""),
+            ("00","The PRINCESS is delighted.","\"These walls will be stained with your blood!\"","\"I missed you, Magister...\"","The PRINCESS smiles. \"Did you need something of me?\"","The PRINCESS struggles to stay standing."),
             False,("\"My ghost will haunt you until your very last breath. Remember that, THEURGIST.\"","\"...\""),0,(pri1,pri2,pri3,pri4,pri5)
             )
 
@@ -645,7 +646,8 @@ c=0
 turnnumber = 1
 
 while True:
-    
+    if turnnumber == 1:
+        storytext(intro_tuple)
     while i < story_progression:
         if dog.dflag == True:
             storytext(mai_tuple)
