@@ -5,6 +5,7 @@ status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # 
 checkerlim = 3 # this is the upper limit to how high a humour can be 
 tab = "     " 
 anyk = "PRESS ANY KEY TO CONTINUE >>"
+sp = "\x1B[3mHello, Magister.\x1B[0m"
 
 intro_tuple = ("You have lived a hard and long life. Extensive practice of your Theurgy has stretched out your time on this plane. You are older than most people, and those older than you are infirm.",
 "A bright voice, clear and cheery. Words you have heard a thousand times. \"Salve, magister.\" \x1B[3mHello, Magister.\x1B[0m \"What are we learning today?\"",
@@ -29,9 +30,9 @@ test_tuple2 = ("The crowd shrinks from you, deathly afraid. You continue towards
 "When you do not move, the knight draws his sword.")
 
 test_tuple3 = ("You step into the ancient building and climb the winding, steep stairs. You do not hear another soul.", 
-"The room at its summit has been turned into a makeshift office. A tall woman stands before a narrow slit of a window. Her gaze is fixed on you."
+"The room at its summit has been turned into a makeshift office. A tall woman stands before a narrow slit of a window. Her gaze is fixed on you.",
 "\"Well, here I am,\" you say.",
-"\"I have been watching you closely.\"", 
+"The woman replies. \"I have been watching you closely.\"", 
 "You give her a single nod." 
 )
 
@@ -75,7 +76,7 @@ end4_tuple =("Excitement settles in your stomach. Wine tastings, soft silks agai
 end5_tuple =("You do not take the Princess\' life. At this point, it is unthinkable.",
 "The King clutched at your robes, begging for you to get rid of her. It was the same when he asked you to take her as her student. "
 "Yellow bile pools in your chest, setting it alight with anger. \"God knows why I came here,\" you say, brusque. \"Waste of time.\"",
-"\"The King sent you,\" the Princess said.",
+"\"The King sent you,\" the Princess says.",
 "You speak without thinking. \"Yes, your good-for-nothing father. It\'s shocking that your level of Theurgy could drive away his forces. Perhaps that speaks volumes for the pair of you!\"",
 "The Princess\' expression clouds over. \"...I have been away from my Magister\'s tutelage for many years.\"",
 "It did not feel so long since she was small enough to pick up, and was small enough to giggle when she was bounced on your lap. It was surely not so long ago when her tiny fist would clasp onto a lock of your hair, and prying those little fingers from it was harder than any magic you had ever come across. Now, she is taller than you. The Princess is a grown woman, who even has faint wrinkles forming on her forehead.", 
@@ -723,8 +724,8 @@ while True:
             turn(enemy)
             randommove(enemy)
             pickspell(enemy)
-            fighting = checkhealth(enemy)
         if you.dflag == True:
+            fighting = checkhealth(enemy)
             i = 100
         else:
             youreset()
@@ -740,23 +741,24 @@ while True:
 
 
     if you.dflag == True and enemy == pri:
-        storytext(end2_tuple) ## killed by princess
-        print("ENDING 2: ")
+        storytext(end2_tuple)
+        print("ENDING 2: Honour")
     elif you.dflag == True:
-        storytext(end1_tuple) #killed by anyone other than princess
+        storytext(end1_tuple) 
         print("ENDING 1: Carrion")
     elif murderer == True:
-        storytext(end3_tuple) # you killed people
+        storytext(end3_tuple) 
         print("ENDING 3: Just")
     elif pri.dflag == True:
-        storytext(end4_tuple) # you kill p cess
+        storytext(end4_tuple) 
         print("ENDING 4: Retribution")
     else:
-        storytext(end5_tuple) #you didnt do a murdering 
-        print("TRUE ENDING: \x1B[3mHello, Magister.\x1B[0m")
+        storytext(end5_tuple) 
+        print("TRUE ENDING: " + sp )
     input("PRESS ANY KEY TO PLAY AGAIN >>")
     i=0
     everyonereset()
     
+
 
 
