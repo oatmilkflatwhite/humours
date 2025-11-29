@@ -496,7 +496,7 @@ def checkhealth(x): #where x = enemy
             print("You extinguised the %s'S life." % x.name)
             x.dflag = True
         else:
-            print("The %s was spared." % x.name)
+            print("%s was spared." % x.name)
             print(x.dphrase[1])
         return False
     elif you.hp <= 0:
@@ -760,6 +760,7 @@ while True:
     i=0
     everyonereset()
     
+
 
 
 
