@@ -2,7 +2,7 @@ import random
 prompt_reply = "Input: "
 text_invalid = "Text invalid. Please try again."
 status = ("000","SANGUINE", "CHOLERIC", "MELANCHOLIC", "PHLEGMATIC","UNWELL") # these are statuses
-checkerlim = 3 # this is the upper limit to how high a humour can be 
+checkerlim = 3 
 tab = "     " 
 anyk = "PRESS ANY KEY TO CONTINUE >>"
 sp = "\x1B[3mHello, Magister.\x1B[0m"
@@ -317,7 +317,7 @@ class Enemy:
         adding = compare(hums,prevhums) #compares previous and current statuses
         if adding == True: 
             #print("found. adding 1 to " + self.name) 
-            self.checker =  self.checker + 1 #this is the death counter, adding one
+            self.checker += 1 #this is the death counter, adding one
             #print("checker: " + str(self.checker))
             prevhums = hums
         else:
@@ -724,8 +724,9 @@ while True:
             turn(enemy)
             randommove(enemy)
             pickspell(enemy)
-        if you.dflag == True:
             fighting = checkhealth(enemy)
+        if you.dflag == True:
+
             i = 100
         else:
             youreset()
