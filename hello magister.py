@@ -317,7 +317,7 @@ class Enemy:
         if adding == True: 
             #print("found. adding 1 to " + self.name) 
             self.checker =  self.checker + 1 #this is the death counter, adding one
-            print("checker: " + str(self.checker))
+            #print("checker: " + str(self.checker))
             prevhums = hums
         else:
             #print("nothing amiss with %s ..." % (self.name))
@@ -758,4 +758,5 @@ while True:
     i=0
     everyonereset()
     
+
 
